@@ -1,25 +1,66 @@
 # single-file-exam-engine
 
-**一份题库 → 一个 HTML 文件。双击就考，不装东西，不连网。**
+**把「一堆知识点」变成「能答的卷子」。生成一个 HTML 文件，双击就能考。**
 
-A question bank goes in, a single self-contained HTML exam comes out. No server, no CDN, no build chain, no dependencies.
+A question bank goes in, a single self-contained HTML exam comes out. No server, no CDN, no dependencies.
+
+> ### 👉 [先花 2 分钟做一遍，比看十段介绍管用](https://u235xuxu.github.io/single-file-exam-engine/examples/demo.html)
+> 打开就是一份 10 题的卷子。答完立刻判分、给解析、标出错在哪。
+
+---
+
+## 你是不是也这样
+
+花两个月整理了厚厚一叠复习资料，公式表、对比表、易错点，做得挺漂亮。
+
+然后打开资料看了一眼，**觉得自己会了**。
+
+考场上发现自己不会。
+
+**因为「看过」和「答对」是两件事，中间差的是一遍一遍地做。**
+
+要做题，就得有一份卷子。而做一份卷子，传统上有三条路，每条都堵：
+
+- **买/找现成题库** —— 题目不是你的重点，别人的重点覆盖不了你的盲区
+- **用在线题库网站** —— 要注册、要联网、要会员，题目你还不能改
+- **自己写网页** —— 写十套题等于把前端写十遍
+
+**这个项目把第二条路修通了：你只管写题，界面交给引擎。**
 
 ```
 python3 build.py bank.yaml
-→ bank.html   ← 这就是全部产物，发给任何人都能直接打开
+→ bank.yaml.html    ← 全部产物。发给任何人，双击就考
 ```
 
 ---
 
-## 为什么做这个
+## 具体省在哪
 
-备考资料的形态通常很糟：一大堆 PDF、一堆网页标签、知识点东一块西一块。想做一套能真正练手的东西，要么用在线题库（要账号、要联网、题目不是你的），要么自己写页面（写十套题等于写十遍前端）。
+假设你要做一套 50 题的模拟卷。
 
-**这个项目只干一件事：把「题库」和「考试界面」解耦。**
+| 做法 | 花多久 |
+|---|---|
+| 手写 HTML 页面 | 一整天，而且改一次题重排一次 |
+| 用在线题库平台 | 注册 + 建题库 + 学习它的导入格式 + 会员费 |
+| **本工具** | **写 50 道题的文本，一条命令** |
 
-- 你只管写题（YAML / JSON，纯文本）
-- 界面由引擎负责（一次写好，无限复用）
-- 产物是**一个 HTML 文件**——离线、可邮件发送、可放 U 盘、可挂任何静态托管
+改题也一样：打开 `bank.yaml` 改一行，重新生成。**不用碰任何前端代码。**
+
+产物是单个 HTML，所以：
+
+- 教室没网也能考
+- 微信直接发给同学，他双击就能做
+- 放进 U 盘、放进任何静态托管，都不需要额外配置
+
+---
+
+## 为什么是单文件
+
+不是技术炫技，是**分发的成本**。
+
+任何需要「先装个什么」「先跑个服务」「先注册个账号」的东西，你发出去 10 个人，会有 8 个卡在第一步。
+
+一个 `.html` 文件，双击。**没有第二步。**
 
 ---
 
@@ -197,11 +238,3 @@ examples/
 ## License
 
 MIT
-
----
-
-## 在线试玩
-
-不想 clone 也能直接考：[**u235xuxu.github.io/single-file-exam-engine/examples/demo.html**](https://u235xuxu.github.io/single-file-exam-engine/examples/demo.html)
-
-源码与文档：[github.com/u235xuxu/single-file-exam-engine](https://github.com/u235xuxu/single-file-exam-engine)
