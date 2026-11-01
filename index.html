@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>single-file-exam-engine · 题库变单文件试卷</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c1e21;--ink2:#5b6270;--ink3:#8b93a1;--line:#e3e6eb;--brand:#2563eb;--soft:#eaf0ff}
+@media(prefers-color-scheme:dark){:root{--bg:#14161a;--card:#1c1f25;--ink:#e9ecf1;--ink2:#a3acbb;--ink3:#6f7889;--line:#2b3038;--brand:#4f83ff;--soft:#1e2b47}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.w{max-width:720px;margin:0 auto;padding:64px 20px 80px}
+h1{font-size:32px;line-height:1.25;margin:0 0 12px;letter-spacing:-.02em}
+.sub{font-size:17px;color:var(--ink2);margin:0 0 36px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin:0 0 16px}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--ink3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+pre{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:0;font-size:13.5px;line-height:1.65}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.cta{display:block;background:var(--brand);color:#fff;text-align:center;padding:16px;border-radius:12px;font-weight:650;font-size:17px;margin:0 0 16px}
+.cta:hover{text-decoration:none;filter:brightness(1.08)}
+ul{margin:8px 0 0;padding-left:22px;color:var(--ink2)}
+li{margin:5px 0}
+.foot{margin-top:36px;font-size:14px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>题库 → 一个 HTML 文件</h1>
+  <p class="sub">双击就考。不装东西，不连网，不依赖任何服务。</p>
+
+  <a class="cta" href="examples/demo.html">▶ 直接试考（10 道示例题）</a>
+
+  <div class="card">
+    <h2>它做什么</h2>
+    <pre><code>python3 build.py bank.yaml
+→ bank.html</code></pre>
+    <ul>
+      <li>题写进 YAML / JSON，纯文本，能进 git、能 diff</li>
+      <li>界面由引擎负责，一次写好无限复用</li>
+      <li>产物是单个自包含 HTML——离线、可邮件发、可放 U 盘</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>支持</h2>
+    <ul>
+      <li>五种题型：单选 / 多选 / 判断 / 填空 / 简答</li>
+      <li>即时判分、逐题解析、计时、进度条</li>
+      <li>填空智能匹配（忽略空格标点、百分号按数值比）</li>
+      <li>简答按关键词命中率判定</li>
+      <li>零第三方依赖（Python 标准库即可）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>边界</h2>
+    <ul>
+      <li>不防作弊——答案在源码里，F12 可见。单文件离线的代价</li>
+      <li>不做成绩汇总——没有服务端，刷新即失</li>
+      <li>不做题库编辑器——题在文本文件里改，这是故意的</li>
+    </ul>
+  </div>
+
+  <p class="foot">
+    源码与文档：<a href="https://github.com/u235xuxu/single-file-exam-engine">github.com/u235xuxu/single-file-exam-engine</a>
+  </p>
+</div>
+</body>
+</html>
