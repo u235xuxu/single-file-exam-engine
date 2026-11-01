@@ -197,3 +197,11 @@ examples/
 ## License
 
 MIT
+
+---
+
+## 在线试玩
+
+不想 clone 也能直接考：[**u235xuxu.github.io/single-file-exam-engine/examples/demo.html**](https://u235xuxu.github.io/single-file-exam-engine/examples/demo.html)
+
+源码与文档：[github.com/u235xuxu/single-file-exam-engine](https://github.com/u235xuxu/single-file-exam-engine)
