@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>/*__TITLE__*/</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#1c1e21; --ink-2:#5b6270; --ink-3:#8b93a1;
+  --line:#e3e6eb; --brand:#2563eb; --brand-soft:#eaf0ff;
+  --ok:#12a150; --ok-soft:#e7f7ee; --bad:#e5484d; --bad-soft:#fdeced;
+  --warn:#f5a524; --warn-soft:#fef6e6;
+  --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14161a; --card:#1c1f25; --ink:#e9ecf1; --ink-2:#a3acbb; --ink-3:#6f7889;
+    --line:#2b3038; --brand:#4f83ff; --brand-soft:#1e2b47;
+    --ok:#3ecf8e; --ok-soft:#15321f; --bad:#ff6b6e; --bad-soft:#3a1b1d;
+    --warn:#f5a524; --warn-soft:#3a2c12;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  padding:0 0 96px; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* ── 顶栏 ── */
+header{
+  position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.hd{display:flex;align-items:center;gap:12px;padding:12px 0}
+.hd h1{font-size:16px;font-weight:650;margin:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd .pill{
+  font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink-2);
+  background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 10px;white-space:nowrap;
+}
+.bar{height:3px;background:var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--brand);transition:width .3s ease}
+
+/* ── 卡片 ── */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin:18px 0;overflow:hidden;
+}
+.card-hd{
+  display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);
+}
+.qno{
+  flex:0 0 auto;font-size:12px;font-weight:700;color:var(--brand);
+  background:var(--brand-soft);border-radius:8px;padding:2px 9px;font-variant-numeric:tabular-nums;
+}
+.qtype{font-size:12px;color:var(--ink-3);margin-left:auto}
+.stem{padding:16px 18px 4px;font-size:16px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.stem code{background:var(--brand-soft);border-radius:4px;padding:1px 5px;font-size:.92em}
+
+/* ── 选项 ── */
+.opts{padding:10px 12px 16px;display:flex;flex-direction:column;gap:2px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border-radius:10px;
+  cursor:pointer;border:1px solid transparent;transition:background .12s,border-color .12s;
+  user-select:none;
+}
+.opt:hover{background:var(--bg)}
+.opt .box{
+  flex:0 0 auto;width:20px;height:20px;margin-top:1px;border:1.5px solid var(--ink-3);
+  display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-3);
+  background:var(--card);transition:all .12s;
+}
+.opt.radio .box{border-radius:50%}
+.opt.check .box{border-radius:6px}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt.sel .box{border-color:var(--brand);background:var(--brand);color:#fff}
+.opt .txt{flex:1;font-size:15px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .box{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .box{border-color:var(--bad);background:var(--bad);color:#fff}
+.opt.locked{cursor:default}
+.opt.locked:hover{background:transparent}
+.opt.right.locked:hover{background:var(--ok-soft)}
+.opt.wrong.locked:hover{background:var(--bad-soft)}
+
+/* ── 填空 / 简答 ── */
+.fillwrap{padding:8px 18px 18px}
+input.fill{
+  width:100%;padding:13px 14px;font-size:15px;font-family:inherit;color:var(--ink);
+  background:var(--bg);border:1.5px solid var(--line);border-radius:10px;outline:none;
+  transition:border-color .12s;
+}
+input.fill:focus{border-color:var(--brand);background:var(--card)}
+input.fill.ok{border-color:var(--ok)}
+input.fill.no{border-color:var(--bad)}
+textarea.fill{
+  width:100%;min-height:110px;padding:13px 14px;font-size:15px;font-family:inherit;color:var(--ink);
+  background:var(--bg);border:1.5px solid var(--line);border-radius:10px;outline:none;resize:vertical;
+  line-height:1.7;
+}
+textarea.fill:focus{border-color:var(--brand);background:var(--card)}
+
+/* ── 解析 ── */
+.explain{
+  margin:0 18px 16px;padding:13px 15px;border-radius:10px;background:var(--bg);
+  border-left:3px solid var(--brand);font-size:14px;line-height:1.75;color:var(--ink-2);
+  white-space:pre-wrap;word-break:break-word;
+}
+.explain b{color:var(--ink)}
+.explain .verdict{display:block;font-weight:700;margin-bottom:6px;font-size:13px}
+.explain.ok .verdict{color:var(--ok)}
+.explain.no .verdict{color:var(--bad)}
+.explain.half .verdict{color:var(--warn)}
+.explain.ok{border-left-color:var(--ok)}
+.explain.no{border-left-color:var(--bad)}
+.explain.half{border-left-color:var(--warn)}
+.src{margin:0 18px 16px;font-size:12px;color:var(--ink-3)}
+
+/* ── 按钮 ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:10px 20px;font-size:14px;font-weight:600;font-family:inherit;
+  border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  cursor:pointer;transition:all .12s;white-space:nowrap;
+}
+.btn:hover{background:var(--bg)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btnrow{display:flex;gap:10px;padding:0 18px 18px;flex-wrap:wrap}
+
+/* ── 底部固定条 ── */
+.foot{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);
+  backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);
+  border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom));
+}
+.foot .wrap{display:flex;gap:10px;align-items:center}
+.foot .btn{flex:1}
+.foot .timer{
+  font-size:14px;font-weight:650;font-variant-numeric:tabular-nums;color:var(--ink-2);
+  padding:0 6px;min-width:64px;text-align:center;
+}
+
+/* ── 结果页 ── */
+.score{margin:22px 0;padding:28px 22px;text-align:center}
+.score .num{font-size:52px;font-weight:750;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.score .num small{font-size:20px;font-weight:600;color:var(--ink-3);margin-left:2px}
+.score .lbl{margin-top:12px;font-size:15px;font-weight:600}
+.score .sub{margin-top:6px;font-size:13px;color:var(--ink-3)}
+.score.pass .num{color:var(--ok)}
+.score.fail .num{color:var(--bad)}
+.bd{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:1px;background:var(--line);border-radius:10px;overflow:hidden;margin:0 18px 18px}
+.bd div{background:var(--card);padding:14px 8px;text-align:center}
+.bd b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+.bd span{font-size:12px;color:var(--ink-3)}
+.hide{display:none!important}
+
+/* ── 空态 ── */
+.empty{text-align:center;padding:60px 20px;color:var(--ink-3);font-size:14px}
+
+@media(max-width:480px){
+  .stem{font-size:15.5px}
+  .opt .txt{font-size:14.5px}
+  .score .num{font-size:44px}
+  .btn{padding:10px 16px;font-size:13.5px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <h1>/*__TITLE__*/</h1>
+    <span class="pill" id="progress">0 / 0</span>
+  </div>
+  <div class="bar"><i id="barfill"></i></div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<div class="foot">
+  <div class="wrap">
+    <span class="timer" id="timer">00:00</span>
+    <button class="btn ghost" id="btnReset">重做</button>
+    <button class="btn primary" id="btnSubmit">交卷</button>
+  </div>
+</div>
+
+<script type="application/json" id="bank">/*__DATA__*/</script>
+<script>
+(function(){
+"use strict";
+
+const BANK = JSON.parse(document.getElementById("bank").textContent);
+const META = BANK.meta || {};
+const QS   = BANK.questions || [];
+const N    = QS.length;
+const TYPE_LABEL = {single:"单选题",multiple:"多选题",judge:"判断题",fill:"填空题",short:"简答题"};
+
+/* 状态：ans[i] 用数组（single/multiple）、数字（judge）、字符串（fill）、字符串（short） */
+let ans     = new Array(N).fill(null);
+let graded  = new Array(N).fill(false);
+let correct = new Array(N).fill(false);
+let startedAt = null, timerId = null, submitted = false;
+
+const app = document.getElementById("app");
+const $prog = document.getElementById("progress");
+const $bar  = document.getElementById("barfill");
+const $timer= document.getElementById("timer");
+const $submit=document.getElementById("btnSubmit");
+const $reset =document.getElementById("btnReset");
+
+/* ── 工具 ── */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LETTERS = "ABCDEFGHIJ";
+const letter = i => LETTERS[i] || String(i+1);
+
+function answered(i){
+  const a = ans[i], q = QS[i];
+  if (q.type === "single" || q.type === "multiple") return Array.isArray(a) && a.length > 0;
+  if (q.type === "judge") return a === 0 || a === 1;
+  if (q.type === "fill" || q.type === "short") return !!(a && String(a).trim());
+  return false;
+}
+
+function updateProgress(){
+  const done = ans.filter((_,i)=>answered(i)).length;
+  $prog.textContent = done + " / " + N;
+  $bar.style.width = (N ? (done / N * 100) : 0) + "%";
+}
+
+function startTimer(){
+  if (startedAt || submitted) return;
+  startedAt = Date.now();
+  timerId = setInterval(() => {
+    const s = Math.floor((Date.now() - startedAt)/1000);
+    $timer.textContent = String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0");
+  }, 1000);
+}
+
+/* ── 判分 ── */
+function normFill(s){
+  return String(s == null ? "" : s)
+    .trim().toLowerCase()
+    .replace(/[\s\u3000]+/g, "")
+    .replace(/[，,。.；;：:、！!？?"'“”‘’()（）\[\]【】]/g, "");
+}
+
+function gradeOne(i){
+  const q = QS[i], a = ans[i];
+  if (!answered(i)) return false;
+  switch(q.type){
+    case "single":
+    case "multiple":
+      if (!Array.isArray(a)) return false;
+      return a.length === q.answer.length && a.every(x => q.answer.includes(x));
+    case "judge":
+      return a === q.answer;
+    case "fill": {
+      const given = q.case_sensitive ? String(a).trim() : normFill(a);
+      const want  = q.accept || [];
+      return want.some(w => {
+        const t = q.case_sensitive ? String(w).trim() : normFill(w);
+        if (/[%％]/.test(t) || /[%％]/.test(given)) {
+          // 带百分号的答案按数值比较，允许 "20" vs "20%"
+          const gv = parseFloat(given.replace(/[%％]/g,""));
+          const tv = parseFloat(t.replace(/[%％]/g,""));
+          if (!isNaN(gv) && !isNaN(tv)) return Math.abs(gv - tv) < 1e-9;
+        }
+        return given === t;
+      });
+    }
+    case "short": {
+      // 简答：命中关键词比例达到一半即算对
+      const kws = q.keywords || [];
+      if (!kws.length) return null;         // 无法自动判分
+      const txt = String(a);
+      const hit = kws.filter(k => txt.includes(k)).length;
+      return hit / kws.length >= 0.5;
+    }
+  }
+  return false;
+}
+
+function scoreOf(q){
+  const s = Number(q.score);
+  return isNaN(s) || s <= 0 ? 1 : s;
+}
+
+/* ── 渲染单题 ── */
+function renderQ(i){
+  const q = QS[i];
+  const el = document.createElement("section");
+  el.className = "card";
+  el.dataset.idx = i;
+
+  let body = "";
+  if (q.type === "single" || q.type === "multiple" || q.type === "judge") {
+    const multi = q.type === "multiple";
+    body = '<div class="opts">' + (q.options||[]).map((o,oi) =>
+      `<div class="opt ${multi?'check':'radio'}" data-oi="${oi}" role="${multi?'checkbox':'radio'}" tabindex="0">
+         <span class="box">${multi?'':letter(oi)}</span>
+         <span class="txt">${esc(o)}</span>
+       </div>`).join("") + '</div>';
+  } else if (q.type === "fill") {
+    body = `<div class="fillwrap"><input class="fill" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="输入答案"></div>`;
+  } else {
+    body = `<div class="fillwrap"><textarea class="fill" placeholder="写下你的答案（简答题需对照参考要点自评）"></textarea></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="card-hd">
+      <span class="qno">${i+1}</span>
+      <span class="qtype">${TYPE_LABEL[q.type]||q.type}${scoreOf(q)>1?` · ${scoreOf(q)}分`:''}</span>
+    </div>
+    <div class="stem">${esc(q.q)}</div>
+    ${body}
+    <div class="explain hide"></div>
+    ${q.source ? `<div class="src hide">出处：${esc(q.source)}</div>` : ''}
+  `;
+
+  /* 事件绑定 */
+  if (q.type === "single" || q.type === "multiple" || q.type === "judge") {
+    el.querySelectorAll(".opt").forEach(opt => {
+      const pick = () => {
+        if (graded[i]) return;
+        startTimer();
+        const oi = +opt.dataset.oi;
+        if (q.type === "multiple") {
+          const cur = Array.isArray(ans[i]) ? ans[i].slice() : [];
+          const at  = cur.indexOf(oi);
+          at >= 0 ? cur.splice(at,1) : cur.push(oi);
+          ans[i] = cur.sort((a,b)=>a-b);
+        } else {
+          ans[i] = [oi];
+        }
+        // 判断题存标量 0/1，与 answered()/gradeOne() 的判定口径一致
+        if (q.type === "judge") ans[i] = oi;
+        el.querySelectorAll(".opt").forEach((o,k)=>o.classList.toggle("sel",
+          q.type === "judge" ? ans[i] === k : (Array.isArray(ans[i]) && ans[i].includes(k))));
+        updateProgress();
+      };
+      opt.addEventListener("click", pick);
+      opt.addEventListener("keydown", e => { if(e.key===" "||e.key==="Enter"){e.preventDefault();pick();} });
+    });
+  } else {
+    const inp = el.querySelector(".fill");
+    inp.addEventListener("input", () => { startTimer(); ans[i] = inp.value; updateProgress(); });
+  }
+
+  return el;
+}
+
+/* ── 渲染试卷 ── */
+function renderExam(){
+  submitted = false; startedAt = null;
+  clearInterval(timerId); timerId = null;
+  $timer.textContent = "00:00";
+  $submit.textContent = "交卷"; $submit.disabled = false;
+  ans = new Array(N).fill(null); graded = new Array(N).fill(false); correct = new Array(N).fill(false);
+  app.innerHTML = "";
+  if (!N) { app.innerHTML = '<div class="empty">题库为空</div>'; return; }
+  QS.forEach((_,i)=> app.appendChild(renderQ(i)));
+  updateProgress();
+  window.scrollTo({top:0});
+}
+
+/* ── 交卷 ── */
+function ask(msg, onYes){
+  // 页面内确认条，不依赖原生 confirm（headless / 部分浏览器会静默返回 false）
+  const old = document.getElementById("askbar");
+  if (old) old.remove();
+  const bar = document.createElement("div");
+  bar.id = "askbar";
+  bar.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99;padding:14px 16px calc(14px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line);box-shadow:0 -4px 24px rgba(0,0,0,.12);display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap";
+  bar.innerHTML = '<span style="flex:1 1 100%;text-align:center;font-size:14px;color:var(--ink-2)">' + esc(msg) + '</span>';
+  const yes = document.createElement("button");
+  yes.className = "btn primary"; yes.textContent = "确定"; yes.style.flex = "1";
+  const no = document.createElement("button");
+  no.className = "btn"; no.textContent = "取消"; no.style.flex = "1";
+  yes.onclick = () => { bar.remove(); onYes(); };
+  no.onclick = () => bar.remove();
+  bar.appendChild(yes); bar.appendChild(no);
+  document.body.appendChild(bar);
+}
+
+function submit(){
+  if (submitted) return;
+  const unanswered = QS.map((_,i)=>i).filter(i=>!answered(i));
+  if (unanswered.length) { ask(`还有 ${unanswered.length} 题未作答，确定交卷？`, doSubmit); return; }
+  doSubmit();
+}
+
+function doSubmit(){
+
+  clearInterval(timerId); timerId = null;
+  submitted = true;
+  let got = 0, total = 0, right = 0, manual = 0;
+
+  QS.forEach((q,i)=>{
+    const sc = scoreOf(q); total += sc;
+    graded[i] = true;
+    const r = gradeOne(i);
+    correct[i] = r === true;
+    if (r === null) manual++;
+    if (r === true) { got += sc; right++; }
+    paintOne(i);
+  });
+
+  const pct = total ? Math.round(got / total * 100) : 0;
+  const pass = pct >= (Number(META.pass_score) || 60);
+  const blankCount = QS.map((_,k)=>k).filter(k=>!answered(k)).length;
+  showResult(got, total, right, pct, pass, manual, blankCount);
+  $submit.textContent = "已交卷"; $submit.disabled = true;
+  window.scrollTo({top:0});
+}
+
+function paintOne(i){
+  const q = QS[i], a = ans[i];
+  const el = app.querySelector(`[data-idx="${i}"]`);
+  if (!el) return;
+  const ex = el.querySelector(".explain");
+  const src = el.querySelector(".src");
+
+  if (q.type === "single" || q.type === "multiple" || q.type === "judge") {
+    el.querySelectorAll(".opt").forEach((o,oi)=>{
+      o.classList.add("locked");
+      o.classList.remove("sel");
+      // 判断题 answer 是标量 0/1，其余是数组
+      const isRight = q.type === "judge" ? q.answer === oi : q.answer.includes(oi);
+      const isMine  = q.type === "judge" ? a === oi : (Array.isArray(a) && a.includes(oi));
+      if (isRight) o.classList.add("right");
+      else if (isMine) o.classList.add("wrong");
+      // 多选题的 box 显示勾选状态
+      if (q.type === "multiple") o.querySelector(".box").textContent = isRight ? "✓" : (isMine ? "✕" : "");
+    });
+  } else if (q.type === "fill") {
+    const inp = el.querySelector(".fill");
+    inp.disabled = true;
+    inp.classList.add(correct[i] ? "ok" : "no");
+  } else {
+    const ta = el.querySelector(".fill");
+    ta.disabled = true;
+  }
+
+  /* 解析 */
+  let parts = [];
+  if (!answered(i)) parts.push("未作答");
+  if (q.type === "single" || q.type === "multiple") {
+    parts.push("正确答案：" + q.answer.map(letter).join(" "));
+    if (answered(i) && !correct[i]) parts.push("你的选择：" + a.map(letter).join(" "));
+  } else if (q.type === "judge") {
+    parts.push("正确答案：" + (q.answer === 0 ? "正确" : "错误"));
+  } else if (q.type === "fill") {
+    parts.push("参考答案：" + (q.accept||[]).join(" / "));
+  } else if (q.type === "short") {
+    if (q.keywords && q.keywords.length) {
+      const hit = q.keywords.filter(k => String(a||"").includes(k));
+      parts.push(`命中要点 ${hit.length}/${q.keywords.length}` + (hit.length ? "：" + hit.join("、") : ""));
+    }
+  }
+
+  const cls = correct[i] ? "ok" : (gradeOne(i) === null ? "half" : "no");
+  const verdict = correct[i] ? "✓ 正确" : (gradeOne(i) === null ? "○ 需自评" : "✕ 错误");
+  const refText = q.type === "short" ? (q.reference || "") : (q.explain || "");
+  ex.className = "explain " + cls;
+  ex.innerHTML = `<span class="verdict">${verdict}</span>`
+               + esc(parts.join("\n"))
+               + (refText ? "\n\n" + esc(refText) : "");
+  if (src) src.classList.remove("hide");
+}
+
+/* ── 结果页 ── */
+function showResult(got, total, right, pct, pass, manual, blank){
+  app.innerHTML = `
+    <section class="card score ${pass?'pass':'fail'}">
+      <div class="num">${pct}<small>分</small></div>
+      <div class="lbl">${pass ? "通过 · 及格线 " + (META.pass_score||60) : "未通过 · 及格线 " + (META.pass_score||60)}</div>
+      <div class="sub">${got} / ${total} 分 · 答对 ${right} 题 · 共 ${N} 题</div>
+    </section>
+    <div class="bd">
+      <div><b>${right}</b><span>答对</span></div>
+      <div><b>${N-right-blank}</b><span>答错</span></div>
+      <div><b>${blank}</b><span>未答</span></div>
+      <div><b>${manual}</b><span>待自评</span></div>
+    </div>
+    <div class="btnrow">
+      <button class="btn primary" id="btnTop" style="flex:1">回到答题</button>
+      <button class="btn" id="btnAgain" style="flex:1">重新做一遍</button>
+    </div>
+  `;
+  document.getElementById("btnTop").onclick = () => window.scrollTo({top:0,behavior:"smooth"});
+  document.getElementById("btnAgain").onclick = renderExam;
+}
+
+/* ── 事件 ── */
+$submit.addEventListener("click", submit);
+$reset.addEventListener("click", () => {
+  if (submitted || ans.some((_,i)=>answered(i))) {
+    ask("清空所有答案重新开始？", renderExam);
+    return;
+  }
+  renderExam();
+});
+window.addEventListener("beforeunload", e => {
+  if (!submitted && ans.some((_,i)=>answered(i))) { e.preventDefault(); e.returnValue = ""; }
+});
+
+renderExam();
+})();
+</script>
+</body>
+</html>
